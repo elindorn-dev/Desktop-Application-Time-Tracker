@@ -22,7 +22,7 @@ if __name__ == "__main__":
     connection = connect_to_db()
     time_apps = fill_dictionary(connection) # словарь для сохранения данных {"имя": время}
     if connection:
-        create_table(connection)
+        create_table_apptime(connection)
         
         while True:
             try:
@@ -31,9 +31,11 @@ if __name__ == "__main__":
                 if app_name not in time_apps: # проверка существования в словаре, добавление если нет
                     time_apps[app_name] = 0
 
-                    add_record(connection, (app_name, time_apps[app_name]))    
+                    if not add_record(connection, (app_name, time_apps[app_name])):
+                        break    
                 time_apps[app_name] += 1 # добавление значения
-                update_record(connection, data=(time_apps[app_name], app_name))
+                if not update_record(connection, data=(time_apps[app_name], app_name)):
+                    break
 
                 output_str = f"{app_name}: {time_apps[app_name]} sec." # строка вывода
                 print(output_str,(70 - len(output_str))*" ", end="", flush=True) # вывод с возвратом коретки

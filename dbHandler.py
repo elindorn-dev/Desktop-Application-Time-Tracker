@@ -1,4 +1,7 @@
 import sqlite3
+import datetime
+
+date_string = datetime.date.today().strftime("%Y-%m-%d") # Получаем текущую дату
 
 def connect_to_db():
     '''
@@ -13,7 +16,7 @@ def connect_to_db():
         print(f"Ошибка при подключении к базе данных: {e}")
         return None
 
-def create_table(conn):
+def create_table_apptime(conn):
     '''
     Создание таблицы в базе данных или создание ее, если она не существует
     '''
@@ -25,7 +28,8 @@ def create_table(conn):
     CREATE TABLE IF NOT EXISTS apptime (
         apptime_id INTEGER PRIMARY KEY AUTOINCREMENT,
         apptime_name TEXT,
-        apptime_time INTEGER
+        apptime_time INTEGER,
+        date_bought DATE NOT NULL
     )
     """
 
@@ -67,9 +71,10 @@ def add_record(conn, data=("none", 0)):
 
     cursor = conn.cursor()
     insert_sql = f"""
-    INSERT INTO apptime (apptime_name, apptime_time) VALUES (?, ?)
+    INSERT INTO apptime (apptime_name, apptime_time, date_bought) VALUES (?, ?, ?)
     """
     try:
+        data = (data[0], data[1], date_string)
         cursor.execute(insert_sql, data)
         conn.commit()
         print(f"Добавлено новое приложение")
@@ -89,9 +94,10 @@ def update_record(conn, data):
     update_sql = f"""
     UPDATE apptime
     SET apptime_time = ?
-    WHERE apptime_name = ?
+    WHERE apptime_name = ? AND date_bought = ?
     """
     try:
+        data = (data[0], data[1], date_string)
         cursor.execute(update_sql, data)
         conn.commit()
         print(f"Изменение времени {data[1]}")
