@@ -20,10 +20,9 @@ def get_active_window_process_name():
 
 if __name__ == "__main__":
     connection = connect_to_db()
-    time_apps = fill_dictionary(connection) # словарь для сохранения данных {"имя": время}
     if connection:
         create_table_apptime(connection)
-        
+        time_apps = fill_dictionary(connection) # словарь для сохранения данных {"имя": время}
         while True:
             try:
                 app_name = get_active_window_process_name() # название процесса

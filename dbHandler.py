@@ -1,5 +1,6 @@
 import sqlite3
 import datetime
+import csv
 
 date_string = datetime.date.today().strftime("%Y-%m-%d") # Получаем текущую дату
 
@@ -48,7 +49,7 @@ def fill_dictionary(conn):
     '''
     cur = conn.cursor()
     try:
-        cur.execute("SELECT apptime_name, apptime_time FROM apptime")
+        cur.execute(f"SELECT apptime_name, apptime_time FROM apptime WHERE date_bought = '{date_string}'")
     except sqlite3.Error as e:
         print(f"Ошибка при выборе записей: {e}")
         return False
